@@ -1,0 +1,45 @@
+From 19ab5ef20b6678a70670575f1e40ee18d7ab7855 Mon Sep 17 00:00:00 2001
+Message-Id: <19ab5ef20b6678a70670575f1e40ee18d7ab7855.1645014095.git.luca.piccarreta@foosoft.it>
+From: Luca Piccarreta <luca@teamcity-agent-rh8-vm.dvp.ravfav.priv>
+Date: Wed, 16 Feb 2022 12:01:38 +0100
+Subject: [PATCH] Added Extern API AndroidGetFrameCtr to be used in watchdogs
+ when video is stuck
+
+Fixed return type
+---
+ modules/video_output/android/display.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/modules/video_output/android/display.c b/modules/video_output/android/display.c
+index 90b428be14..fdd33b625e 100644
+--- a/modules/video_output/android/display.c
++++ b/modules/video_output/android/display.c
+@@ -1159,9 +1159,13 @@ static void Prepare(vout_display_t *vd, picture_t *picture,
+     }
+ }
+
++static int frameCtr = 0;
++
+ static void Display(vout_display_t *vd, picture_t *picture,
+                     subpicture_t *subpicture)
+ {
++    frameCtr++;
++
+     vout_display_sys_t *sys = vd->sys;
+
+     if (sys->p_window->b_opaque)
+@@ -1181,6 +1185,10 @@ static void Display(vout_display_t *vd, picture_t *picture,
+     sys->b_displayed = true;
+ }
+
++int AndroidGetFrameCtr() {
++    return frameCtr;
++}
++
+ static void CopySourceAspect(video_format_t *p_dest,
+                              const video_format_t *p_src)
+ {
+--
+2.27.0
+
+
